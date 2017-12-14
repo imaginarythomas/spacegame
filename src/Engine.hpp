@@ -1,5 +1,9 @@
 class Engine {
 public :
+    int screenWidth;
+    int screenHeight;
+    TCOD_key_t lastKey;
+
     enum GameStatus{
         STARTUP,
         IDLE,
@@ -12,10 +16,11 @@ public :
     Map *map;
     int fovRadius;
  
-    Engine();
+    Engine( int screenWidth, int screenHeight);
     ~Engine();
     void update();
     void render();
+    void sendToBack(Actor *actor);
 };
  
 
