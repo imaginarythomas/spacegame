@@ -2,6 +2,8 @@
 #include <math.h>
 #include "main.hpp"
 
+static const int TRACKING_TURNS = 3;
+
 void PlayerAi::update(Actor *owner){
     if (owner->destructible && owner->destructible->isDead()){
         return;
@@ -48,13 +50,18 @@ void MonsterAi::update(Actor *owner){
         return;
     }
     if (engine.map->isInFov(owner->x, owner->y)){
-        moveOrAttack(owner, engine.player->x, engine.player->y);
+        moveCount = TRACKING_TURNS;
+    }else{
+        if (moveCount > 0) moveCount -= 1;
     }
+    if (moveCount > 0) moveOrAttack(owner, engine.player->x, engine.player->y);
 }
 
 void MonsterAi::moveOrAttack(Actor *owner, int targetx, int targety){
     int dx = targetx - owner->x;
     int dy = targety - owner->y;
+    int stepdx = (dx > 0 ? 1 : -1);
+    int stepdy = (dy > 0 ? 1 : -1);
 
     float distance=sqrtf(dx*dx+dy*dy);
 
@@ -65,6 +72,10 @@ void MonsterAi::moveOrAttack(Actor *owner, int targetx, int targety){
         if (engine.map->canWalk(owner->x + dx, owner->y + dy)){
             owner->x += dx;
             owner->y += dy;
+        }else if (engine.map->canWalk(owner->x+stepdx, owner->y)){
+            owner->x += stepdx;
+        }else if(engine.map->canWalk(owner->x, owner->y + stepdy)){
+            owner->y += stepdy;
         }
     }else if (owner->attacker){
         owner->attacker->attack(owner, engine.player);

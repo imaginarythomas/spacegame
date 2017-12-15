@@ -42,7 +42,9 @@ void Engine::render() {
         Actor *actor = *iterator;
         if (map->isInFov(actor->x, actor->y)){
             actor->render();
-            TCODConsole::root->print(1, screenHeight-2, "HP: %d/%d", (int)player->destructible->hp, (int)player->destructible->maxHp);
+             TCODConsole::setColorControl(TCOD_COLCTRL_1,TCODColor::red,TCODColor::green);
+
+            TCODConsole::root->print(1, 2, "HP: %d/%d", (int)player->destructible->hp, (int)player->destructible->maxHp);
         }
     }
 }
